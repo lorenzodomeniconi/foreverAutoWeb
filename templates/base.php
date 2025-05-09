@@ -35,6 +35,16 @@
                                 </li>
                             </ul>
                         </div>
+                        <!-- Bottone Logout in fondo alla navbar -->
+                        <div class="d-flex ms-auto">
+                        <?php if(isUserLoggedIn()): ?>
+                            <a class="nav-link custom-nav-link logout-link" href="">Logout</a>
+                        <?php endif; ?>
+                        <?php if(!isUserLoggedIn()): ?>
+                            <a class="nav-link custom-nav-link" href="">Login</a>
+                        <?php endif; ?>
+
+                        </div>
                     </div>
                 </nav>
             </header>

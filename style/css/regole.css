@@ -17,10 +17,17 @@
     left: 50%;
     transition: width 0.3s, left 0.3s;
 }
+.logout-link {
+    color: #a70024;
+}
+.logout-link:hover {
+    color: #a70024;
+}
 .custom-nav-link:hover::after {
     width: 100%;
     left: 0;
 }
-.custom-nav-link:hover {
-    color: #2575fc;
+body {
+    background-color: #343a40;
+    color: white;
 }

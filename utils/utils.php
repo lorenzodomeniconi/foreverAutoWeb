@@ -2,7 +2,7 @@
 
 // check se l'utente ha già effettuato l'accesso
 function isUserLoggedIn() {
-    return !empty($_SESSION['username']);
+    return isset($_SESSION['username']);
 }
 
 // salvataggio in sessione del nome, tipo e notifiche dell'utente
