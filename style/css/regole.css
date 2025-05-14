@@ -31,3 +31,12 @@ body {
     background-color: #343a40;
     color: white;
 }
+
+.social-icon {
+    font-size: 1.2rem;
+    color: white;
+}
+
+.social-icon:hover {
+    color: #a70024;
+}
