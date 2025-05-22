@@ -6,9 +6,9 @@
       <h2 class="mt-3">Accedi</h2>
     </div>
 
-    <?php if(isset($templateParams["errorelogin"])): ?>
+    <?php if(isset($templateParams["error"])): ?>
       <div class="alert alert-warning text-center py-2">
-        <?php echo $templateParams["errorelogin"]; ?>
+        <?php echo $templateParams["error"]; ?>
       </div>
     <?php endif; ?>
 

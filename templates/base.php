@@ -54,18 +54,11 @@
             </nav>
         </header>
 
-
-        <!-- qua va il codice dinamico -->
-            <?php
-                if(isset($templateParams["nome"])){
-                    require($templateParams["nome"]);
-                }
-            ?>
-
+        <?php
+            if(isset($templateParams["nome"])) require($templateParams["nome"]);
+        ?>
     </main>
         
-
-    <!-- Footer -->
     <footer class="bg-dark text-white py-4 mt-auto">
         <div class="container text-center">
             <p class="mb-1">&copy; 2025 Forever Auto - Tutti i diritti riservati</p>
