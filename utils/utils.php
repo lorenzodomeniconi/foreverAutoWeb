@@ -7,6 +7,7 @@ enum Roles: string {
 
 enum Pages: string {
     case BOOTSTRAP = 'bootstrap.php';
+    case UTILS = 'utils.php';
     case BASE = 'base.php';
     case INDEX = 'index.php';
     case HOME = 'home.php';
@@ -68,8 +69,9 @@ function isActive($pagename){
 
 // Set dei parametri obj template
 function setTemplateParams($title, $pageName, $params = array()) {
+    global $templateParams;
     $templateParams['title'] = $title;
-    $templateParams['name'] = $pageName;
+    $templateParams['name'] = $pageName;    
     foreach($params as $key => $value) {
         $templateParams[$key] = $value;
     }

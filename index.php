@@ -1,48 +1,44 @@
 <?php
-require_once(Pages::BOOTSTRAP);
+require_once("bootstrap.php");
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-setTemplateParams("ForeverAuto - Home", "templates/" . Pages::HOME_PAGE, array(
-    "vehicles" => "", // TODO: recuperare i veicoli dal database
-    "categories" => "" // TODO: recuperare le categorie dal database
+setTemplateParams("ForeverAuto - Home", "templates/" . Pages::HOME_PAGE->value, array(
+    "vehicles" => $db->getVehicles(), 
+    "categories" => $db->getCategories()
 ));
 
+$search = isset($_GET['search']) ? $_GET['search'] : '';
+$categoria = isset($_GET['categoria']) ? $_GET['categoria'] : '';
+$disponibilita = isset($_GET['disponibilita']) ? $_GET['disponibilita'] : '';
+
 if(isUserLoggedIn()) {
-    // Visualizzazione concessionaria 
-    if(isset($_SESSION['ragSociale'])) { //
-        $vehicles = $db->getVeicoliByConcessionaria($_SESSION['partitaIva']);
-        setTemplateParams("ForeverAuto - Home", "templates/" . Pages::DEALER_PAGE, array(
-            "vehicles" => $vehicles
+    // Visualizzazione concessionaria //
+    if(isset($_SESSION['ragSociale'])) { 
+        setTemplateParams("ForeverAuto - Home", "templates/" . Pages::DEALER_PAGE->value, array(
+            "vehicles" => $$db->getVehiclesByDealer($_SESSION['partitaIva'])
         ));
     }
     // Visualizzazione cliente //
-    else { 
-        // Lista veicoli con filtri applicati 
-        $vehicles = $db->getVeicoli($search, $categoria, $disponibilita);
-        $categories = $db->getCategorie();
-
+    else {
         // Creo un carrello per l'utente
         $_SESSION['codCarrello'] = $db->getOrCreateCarrello($_SESSION['username']);
 
-        setTemplateParams("ForeverAuto - Home", "templates/" . Pages::HOME_PAGE, array(
-            "vehicles" => $vehicles,
-            "categories" => $categories
+        setTemplateParams("ForeverAuto - Home", "templates/" . Pages::HOME_PAGE->value, array(
+            "vehicles" => $db->getVehicles($search, $categoria, $disponibilita),
+            "categories" => $db->getCategories()
         ));
     }
 
 // Utente non loggato, creazione carrello non necessaria //
 } else {
-    $vehicles = $db->getVeicoli($search, $categoria, $disponibilita);
-    $categories = $db->getCategorie();
-
-    setTemplateParams("ForeverAuto - Home", "templates/" . Pages::HOME_PAGE, array(
-        "vehicles" => $vehicles,
-        "categories" => $categories
+    setTemplateParams("ForeverAuto - Home", "templates/" . Pages::HOME_PAGE->value, array(
+        "vehicles" => $db->getVehicles($search, $categoria, $disponibilita),
+        "categories" => $db->getCategories()
     ));
 }
 
-require "templates/" . Pages::BASE;
+require "templates/" . Pages::BASE->value;
 ?>
