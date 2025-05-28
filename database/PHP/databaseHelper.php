@@ -67,6 +67,20 @@ class DatabaseHelper {
     
         return null;
     }
+
+    /**
+     * Restituisce le informazioni della concessionaria tramite partita IVA
+     * @param string $partitaIva: partita IVA della concessionaria ricercata
+     * @return array: tutti i dati della concessionaria che rispetta il criterio di ricerca
+     */
+    public function getConcessionaria($partitaIva) {
+        $query = "SELECT partitaIva, ragSociale, sede, email FROM concessionarie WHERE partitaIva = ?";
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param('s',$partitaIva);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
         
     /**
      * Ottiene i veicoli in base ai filtri applicati
@@ -130,6 +144,20 @@ class DatabaseHelper {
     }
 
     /**
+     * Ottiene il veicolo richiesto tramite numero di telaio
+     * @param string $numTelaio: Termine di ricerca per numero di telaio
+     * @return array Un array contenente i dati del veicolo che soddisfa il criterio di ricerca
+     */
+    public function getVehicleByNumTelaio($numTelaio) {
+        $query = "SELECT numTelaio, marca, modello, descrizione, alimentazione, prezzo, kilometri, proprietariPrecedenti, ragSociale, venduto, concessionaria FROM veicoli, concessionarie WHERE numTelaio = ?";
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param('i',$numTelaio);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+    /**
      * Ottiene le categorie di veicoli disponibili
      * @return array Un array di categorie
      */
@@ -185,6 +213,118 @@ class DatabaseHelper {
         $stmt->close();
     
         return $newCodCarrello;
+    }
+
+    /**
+     * Inserisce un nuovo veicolo nel database
+     * @param string $numTelaio: numero di telaio del veicolo che si vuole inserire e le altre informazioni necessarie
+     * @return int per indicare se l'inserimento è andato a buon fine
+     */
+    public function insertVehicle($numTelaio, $marca, $modello, $descrizione, $alimentazione, $prezzo, $categoria, $concessionaria, $kilometri, $proprietariPrecedenti) {
+        $query = "INSERT INTO veicoli (numTelaio, marca, modello, descrizione, alimentazione, prezzo, categoria, concessionaria, kilometri, proprietariPrecedenti, venduto) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)";
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param('sssssissii',$numTelaio, $marca, $modello, $descrizione, $alimentazione, $prezzo, $categoria, $concessionaria, $kilometri, $proprietariPrecedenti);
+        $stmt->execute();
+        return $stmt->insert_id;
+    }
+
+    /**
+     * Elimina il veicolo con il corrispondente numero di telaio
+     * @param string $numTelaio: numero di telaio del veicolo che si vuole eliminare
+     * @return int per indicare se l'eliminazione è andata a buon fine
+     */
+    public function deleteVehicle($numTelaio) {
+        $stmt = $this->db->prepare("DELETE FROM veicoli WHERE numTelaio = ?");
+        $stmt->bind_param("s", $numTelaio);
+        $stmt->execute();
+        return $stmt->affected_rows;
+    }
+
+    /**
+     * Inserisce un veicolo all'interno di un carrello
+     * @param int $codCarrello: codice del carrello in cui si vuole inserire il veicolo
+     * @param string $numTelaio: numero di telaio del veicolo del veicolo che si vuole aggiungere al carrello
+     * @return string: ritorna un messaggio di errore se quel determinato veicolo è già presente in quel determinato carrello
+     */
+    public function insertVehicleInCarrello($codCarrello, $numTelaio) {
+        $carrello = $this->getVeicoliNelCarrello($codCarrello);
+
+        // Controlla se il veicolo è già presente nel carrello        
+        foreach ($carrello as $veicolo) {
+            if ($veicolo['numTelaio'] == $numTelaio) {
+                // Veicolo già presente nel carrello
+                return ' Veicolo già presente nel carrello'; 
+            }
+        }
+
+        $stmt = $this->db->prepare("INSERT INTO carrelliSpecifici (codCarrello, numTelaio) VALUES (?, ?)");
+        $stmt->bind_param("is", $codCarrello, $numTelaio);
+        $res = $stmt->execute();
+        if(isset($res)) {
+            return '';
+        }
+        return '';
+    }
+
+    /**
+     * Restituisce i veicoli all'interno di uno specifico carrello
+     * @param int $codCarrello: codice del carrello di cui si vuole visualizzare il contenuto
+     * @return array: array contenente tutti i veicoli presenti nel carrello richiesto
+     */
+    public function getVeicoliNelCarrello($codCarrello) {
+        $stmt = $this->db->prepare("
+            SELECT v.numTelaio, v.marca, v.modello, v.prezzo, v.venduto
+            FROM veicoli v
+            INNER JOIN carrelliSpecifici cs ON v.numTelaio = cs.numTelaio
+            WHERE cs.codCarrello = ?");
+        $stmt->bind_param("i", $codCarrello);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+    /**
+     * Crea un nuovo utente all'interno del database
+     * @param string $numTelaio: numero di telaio del veicolo di cui si vogliono modificare i dati e i dati aggiornati
+     * @return void
+     */
+    public function updateVehicle($numTelaio, $marca, $modello, $prezzo, $descrizione, $proprietariPrecedenti, $kilometri, $alimentazione, $venduto) {
+        $query = "UPDATE veicoli SET marca = ?, modello = ?, prezzo = ?, descrizione = ?, proprietariPrecedenti = ?, kilometri = ?, alimentazione = ?, venduto = ? WHERE numTelaio = ?";
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param("ssisiisis", $marca, $modello, $prezzo, $descrizione, $proprietariPrecedenti, $kilometri, $alimentazione, $venduto, $numTelaio);
+        $stmt->execute();
+    }
+
+    /**
+     * Crea un nuovo utente all'interno del database
+     * @param array $data: Array nel quale sono contenute le informazioni inserite dall'utente
+     * in fase di registrazione
+     * @param string $ruolo: Indica se l'utente è una concessionaria o un acquirente
+     * @return bool per indicare se la registrazione è andata a buon fine
+     */
+    public function createNewUtente($data, $ruolo) {
+        // Registro le credenziali
+        $hashedPassword = password_hash($data["password"], PASSWORD_DEFAULT);
+        
+        $stmt = $this->db->prepare("INSERT INTO `credenziali` (`username`, `password`) VALUES (?, ?)");
+        $stmt->bind_param("ss", $data["username"], $hashedPassword);
+        $stmt->execute();
+        // Collego l'username all'utente
+        if($ruolo == "acquirente") {
+            // Creo un nuovo utente acquirente
+            $stmt = $this->db->prepare("INSERT INTO `acquirenti` (`codFiscale`, `nome`, `cognome`, `username`, `email`) VALUES (?,?,?,?,?)");
+            $stmt->bind_param("sssss", $data["codFiscale"], $data["nome"], $data["cognome"], $data["username"], $data["email"]);
+            $stmt->execute();
+            return true;
+        } else if($ruolo == "concessionaria") {
+            // Creo un nuovo utente venditore
+            $partitaIva = (int) $data["partitaIva"];
+            $stmt = $this->db->prepare("INSERT INTO `concessionarie` (`partitaIva`, `ragSociale`, `sede`, `email`, `username`) VALUES (?,?,?,?,?)");
+            $stmt->bind_param("issss", $partitaIva, $data["ragSociale"], $data["sede"], $data["email"], $data["username"]);
+            $stmt->execute();
+            return true;
+        }
+        return false;
     }
 
 }

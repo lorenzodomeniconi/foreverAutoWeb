@@ -1,7 +1,7 @@
 <?php
-require_once(Pages::BOOTSTRAP);
+require_once("bootstrap.php");
 
 logOut();
 
-header("location: " . Pages::INDEX);
+header("location: " . Pages::INDEX->value);
 ?>

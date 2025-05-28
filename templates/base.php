@@ -14,40 +14,79 @@
             <nav class="navbar navbar-expand-lg navbar-dark custom-navbar">
                 <div class="container-fluid">
                     <!-- Logo -->
-                    <a class="navbar-brand" href="#">
+                    <a class="navbar-brand" href="index.php">
                         <img src="style/forever.png" alt="Logo" style="height: 50px;">
                     </a>
                     
-                    <!-- Se l'utente è loggato può vedere pulsanti che mostrano info legate al suo account -->
-                    <?php if(isUserLoggedIn()): ?>
                     <!-- Bottone hamburger per mobile -->
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
+
                     <!-- Menu di navigazione -->
                     <div class="collapse navbar-collapse" id="navbarNav">
                         <ul class="navbar-nav ms-auto">
+                            <?php if(isUserLoggedIn()): ?>
                             <li class="nav-item">
-                                <a class="nav-link custom-nav-link" href="index.php">Home</a>
+                                <a class="nav-link custom-nav-link <?php echo isActive("index.php");?>" href="index.php">Home</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link custom-nav-link" href="">Notifiche</a>
+                                <a class="nav-link custom-nav-link <?php echo isActive("notifiche.php");?>" href="">Notifiche</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link custom-nav-link" href="">Carrello</a>
+                                <a class="nav-link custom-nav-link <?php echo isActive("carrello.php");?>" href="">Carrello</a>
                             </li>
+                            <?php endif; ?>
+
+                            <!-- Sezione che mostra il nome o la ragione sociale in base al ruolo -->
+                            <?php if(isUserLoggedIn()): ?>
+                            <li class="nav-item d-lg-none">
+                                <!-- Mobile (hamburger) - Mostra il nome o la ragione sociale -->
+                                <?php if($_SESSION["ruolo"] === "acquirente"): ?>
+                                    <span class="nav-link custom-nav-link">
+                                        <?php echo htmlspecialchars($_SESSION["nome"]); ?>
+                                    </span>
+                                <?php elseif($_SESSION["ruolo"] === "concessionaria"): ?>
+                                    <span class="nav-link custom-nav-link"></span>
+                                        <?php echo htmlspecialchars($_SESSION["ragSociale"]); ?>
+                                    </span>
+                                <?php endif; ?>
+                            </li>
+
+                            <li class="nav-item d-lg-none">
+                                <!-- Aggiungi logout con la classe 'logout-link' anche per il mobile -->
+                                <a class="nav-link custom-nav-link logout-link" href="logout.php">Logout</a>
+                            </li>
+                            <?php endif; ?>
+                            <?php if(!isUserLoggedIn()): ?>
+                                <li class="nav-item d-lg-none">
+                                    <a class="nav-link custom-nav-link" href="login.php" >Login</a>
+                                </li>
+                                <li class="nav-item d-lg-none">
+                                    <a class="nav-link custom-nav-link" href="signup.php" >Registrati</a>
+                                </li>
+                            <?php endif; ?>
                         </ul>
                     </div>
-                    <?php endif; ?>
-                    
-                    <!-- Bottone Login/Logout in fondo alla navbar, in base allo stato della sessione -->
-                    <div class="d-flex ms-auto">
+                    <!-- Sezione per desktop, allineata a destra -->
+                    <div class="d-none d-lg-flex ms-auto">
                         <?php if(isUserLoggedIn()): ?>
-                            <a class="nav-link custom-nav-link logout-link" href="">Logout</a>
+                            <!-- Verifica il ruolo e mostra il nome o la ragione sociale -->
+                            <?php if($_SESSION["ruolo"] === "acquirente"): ?>
+                                <span class="nav-link custom-nav-link">
+                                    <?php echo htmlspecialchars($_SESSION["nome"]); ?>
+                                </span>
+                            <?php elseif($_SESSION["ruolo"] === "concessionaria"): ?>
+                                <span class="nav-link custom-nav-link">
+                                    <?php echo htmlspecialchars($_SESSION["ragSociale"]); ?>
+                                </span>
+                            <?php endif; ?>
+                            <a class="nav-link custom-nav-link logout-link" href="logout.php">Logout</a>
                         <?php endif; ?>
+
                         <?php if(!isUserLoggedIn()): ?>
                             <a class="nav-link custom-nav-link" href="login.php">Login</a>
-                            <a class="nav-link custom-nav-link" href="">Regstrati</a>
+                            <a class="nav-link custom-nav-link" href="signup.php">Registrati</a>
                         <?php endif; ?>
                     </div>
                 </div>

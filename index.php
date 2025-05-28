@@ -18,7 +18,7 @@ if(isUserLoggedIn()) {
     // Visualizzazione concessionaria //
     if(isset($_SESSION['ragSociale'])) { 
         setTemplateParams("ForeverAuto - Home", "templates/" . Pages::DEALER_PAGE->value, array(
-            "vehicles" => $$db->getVehiclesByDealer($_SESSION['partitaIva'])
+            "vehicles" => $db->getVehiclesByDealer($_SESSION['partitaIva'])
         ));
     }
     // Visualizzazione cliente //

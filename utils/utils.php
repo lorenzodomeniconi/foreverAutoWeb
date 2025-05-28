@@ -19,6 +19,7 @@ enum Pages: string {
     case LOGIN_PAGE = 'loginForm.php';
     case DEALER_PAGE = 'dealerPage.php';
     case ADD_VEHICLE = 'addVehicleForm.php';
+    case SIGNUP_PAGE = 'signupForm.php';
 }
 
 enum ErrorTypes: int {
@@ -37,16 +38,17 @@ function isUserLoggedIn() {
 }
 
 // Salvataggio in sessione del nome, tipo e notifiche dell'utente
-function registerUser($user, $dealer, $notifiche = null) {
+function registerUser($user, $concessionaria, $notifiche = null) {
     $_SESSION['username'] = $user['username'];
-    $_SESSION['dealer'] = $dealer;
-    if($dealer) {
+    if($concessionaria) {
+        $_SESSION['ruolo'] = "concessionaria";
         $_SESSION['ragSociale'] = $user['ragSociale'];
+        $_SESSION['partitaIva'] = $user['partitaIva'];
     } else {
-        $_SESSION['nome'] = $user['nome'];
-        $_SESSION['cognome'] = $user['cognome'];
+        $_SESSION['nome'] = $user['nome'] . " " . $user['cognome'];
+        $_SESSION['ruolo'] = "acquirente";
     }
-    $_SESSION['notfiche'] = isset($_SESSION['notfiche']) ? $_SESSION['notfiche'] : array();
+    $_SESSION['notifiche'] = isset($_SESSION['notifiche']) ? $_SESSION['notifiche'] : array();
 }
 
 // Log-out dell'utente (destroy della sessione corrente)
@@ -55,7 +57,7 @@ function logOut() {
     $_SESSION['nome'] = NULL;
     $_SESSION['cognome'] = NULL;
     $_SESSION['notifiche'] = NULL;
-    $_SESSION['dealer'] = NULL;
+    $_SESSION['ruolo'] = NULL;
     $_SESSION['ragSociale'] = NULL;
 
     session_destroy();
@@ -63,7 +65,7 @@ function logOut() {
 
 function isActive($pagename){
     if(basename($_SERVER['PHP_SELF']) == $pagename){
-        echo " class='active' ";
+        echo "active";
     }
 }
 

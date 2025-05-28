@@ -1,7 +1,9 @@
 <?php
-require_once Pages::BOOTSTRAP;
+require_once "bootstrap.php";
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
 
-setTemplateParams("ForeverAuto - Login", "templates/" . Pages::LOGIN_PAGE);
+setTemplateParams("ForeverAuto - Login", "templates/" . Pages::LOGIN_PAGE->value);
 
 // Controlla se l'utente ha già effettuato il login
 if(isset($_POST['username']) && isset($_POST['password'])) {
@@ -23,9 +25,9 @@ if(isset($_POST['username']) && isset($_POST['password'])) {
 
 // Controlla se i dati sono salvati nella sessione e in caso reindirizzo alla pagina home
 if(isUserLoggedIn()) {
-    header("location: " . Pages::INDEX);
+    header("location: " . Pages::INDEX->value);
     exit();
 }
 
-require 'templates/' . Pages::BASE;
+require 'templates/' . Pages::BASE->value;
 ?>
