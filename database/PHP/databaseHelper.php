@@ -149,11 +149,17 @@ class DatabaseHelper {
      * @return array Un array contenente i dati del veicolo che soddisfa il criterio di ricerca
      */
     public function getVehicleByNumTelaio($numTelaio) {
-        $query = "SELECT numTelaio, marca, modello, descrizione, alimentazione, prezzo, kilometri, proprietariPrecedenti, ragSociale, venduto, concessionaria FROM veicoli, concessionarie WHERE numTelaio = ?";
+        $query = "SELECT numTelaio, marca, modello, descrizione, alimentazione, 
+                         prezzo, kilometri, proprietariPrecedenti, ragSociale, 
+                         venduto, concessionaria 
+                  FROM veicoli, concessionarie 
+                  WHERE numTelaio = ?";
+        
         $stmt = $this->db->prepare($query);
         $stmt->bind_param('i',$numTelaio);
         $stmt->execute();
         $result = $stmt->get_result();
+
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 

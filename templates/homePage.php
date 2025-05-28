@@ -10,7 +10,7 @@
     <select class="form-select filter-dark" name="categoria">
       <option value="">Tutte le categorie</option>
       <?php foreach($templateParams['categories'] as $category): ?>
-        <option value="<?php echo htmlspecialchars($category['tipo']); ?>" <?php if(isset($_GET['categoria']) && $_GET['categoria'] == $categoria['tipo']) echo 'selected'; ?>>
+        <option value="<?php echo htmlspecialchars($category['tipo']); ?>" <?php if(isset($_GET['category']) && $_GET['category'] == $categoria['tipo']) echo 'selected'; ?>>
           <?php echo htmlspecialchars($category['tipo']); ?>
         </option>
       <?php endforeach; ?>
@@ -31,7 +31,7 @@
     <?php if(count($templateParams['vehicles']) > 0): ?>
       <?php foreach($templateParams['vehicles'] as $vehicle): ?>
         <div class="col-md-4 col-lg-3 mb-4">
-          <a href="veicolo.php?telaio=<?php echo urlencode($vehicle['numTelaio']); ?>" class="text-decoration-none">
+          <a href="vehicle.php?telaio=<?php echo urlencode($vehicle['numTelaio']); ?>" class="text-decoration-none">
             <div class="card card-hover custom-bg-card text-white h-100 shadow-lg">
             <?php
                 $nomeImmagine = strtolower(str_replace(' ', '', $vehicle['marca'] . $vehicle['modello'])) . ".jpeg";

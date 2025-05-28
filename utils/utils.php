@@ -20,6 +20,7 @@ enum Pages: string {
     case DEALER_PAGE = 'dealerPage.php';
     case ADD_VEHICLE = 'addVehicleForm.php';
     case SIGNUP_PAGE = 'signupForm.php';
+    case SINGLE_VEHICLE = 'singleVehicle.php';
 }
 
 enum ErrorTypes: int {

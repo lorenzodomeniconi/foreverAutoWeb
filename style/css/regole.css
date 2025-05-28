@@ -81,7 +81,6 @@ body {
   color: white;
 }
 
-
 .filter-dark {
   background-color: #222; /* scuro */
   color: #f8f9fa; /* chiaro */
@@ -107,4 +106,10 @@ body {
 
 .custom-bg-card {
   background-color: #545454;
+}
+
+.card-img-top {
+  height: 200px; /* Set your preferred height */
+  object-fit: cover; /* Ensure the image covers the area without distortion */
+  width: 100%; /* Make sure the image stretches full width of its container */
 }
