@@ -22,6 +22,7 @@ enum Pages: string {
     case SIGNUP_PAGE = 'signupForm.php';
     case SINGLE_VEHICLE = 'singleVehicle.php';
     case UPDATE_VEHICLE = 'updateVehicleForm.php';
+    case PROFILE_PAGE = 'profilePage.php';
 }
 
 enum ErrorTypes: int {
@@ -76,7 +77,7 @@ function setTemplateParams($title, $pageName, $params = array()) {
     global $templateParams;
     $templateParams['title'] = $title;
     $templateParams['name'] = $pageName;    
-    foreach($params as $key => $value) {
+    foreach($params as $key => $value) {        
         $templateParams[$key] = $value;
     }
     return $templateParams;

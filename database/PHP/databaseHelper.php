@@ -69,17 +69,35 @@ class DatabaseHelper {
     }
 
     /**
+     * Restituisce le informazioni dell'acquirente tramite username
+     * @param string $username: username dell'acquirente ricercato
+     * @return array: tutti i dati dell'acquirente che rispetta il criterio di ricerca
+     */
+    public function getAcquirente($username) {
+        $query = "SELECT codFiscale, nome, cognome, email FROM acquirenti WHERE username = ? LIMIT 1 ";
+        
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param('s',$username);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        return $result->fetch_all(MYSQLI_ASSOC)[0] ?? []; // Restituisce un array vuoto se non trovato
+    }
+
+    /**
      * Restituisce le informazioni della concessionaria tramite partita IVA
      * @param string $partitaIva: partita IVA della concessionaria ricercata
      * @return array: tutti i dati della concessionaria che rispetta il criterio di ricerca
      */
     public function getConcessionaria($partitaIva) {
-        $query = "SELECT partitaIva, ragSociale, sede, email FROM concessionarie WHERE partitaIva = ?";
+        $query = "SELECT partitaIva, ragSociale, sede, email FROM concessionarie WHERE partitaIva = ? LIMIT 1 ";
+        
         $stmt = $this->db->prepare($query);
         $stmt->bind_param('s',$partitaIva);
         $stmt->execute();
         $result = $stmt->get_result();
-        return $result->fetch_all(MYSQLI_ASSOC);
+
+        return $result->fetch_all(MYSQLI_ASSOC)[0] ?? []; // Restituisce un array vuoto se non trovato
     }
         
     /**

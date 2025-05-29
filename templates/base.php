@@ -37,28 +37,22 @@
                                 <a class="nav-link custom-nav-link <?php echo isActive("carrello.php");?>" href="">Carrello</a>
                             </li>
                             <?php endif; ?>
-
-                            <!-- Sezione che mostra il nome o la ragione sociale in base al ruolo -->
+                            
                             <?php if(isUserLoggedIn()): ?>
-                            <li class="nav-item d-lg-none">
-                                <!-- Mobile (hamburger) - Mostra il nome o la ragione sociale -->
-                                <?php if($_SESSION["ruolo"] === "acquirente"): ?>
-                                    <span class="nav-link custom-nav-link">
-                                        <?php echo htmlspecialchars($_SESSION["nome"]); ?>
-                                    </span>
-                                <?php elseif($_SESSION["ruolo"] === "concessionaria"): ?>
-                                    <span class="nav-link custom-nav-link"></span>
-                                        <?php echo htmlspecialchars($_SESSION["ragSociale"]); ?>
-                                    </span>
-                                <?php endif; ?>
-                            </li>
+                                <li class="nav-item d-lg-none">
+                                    <a class="nav-link custom-nav-link profile-link" href="profile.php">
+                                        <?php if($_SESSION["ruolo"] === Roles::BUYER->value): ?>
+                                            <?php echo htmlspecialchars($_SESSION["nome"]); ?>
+                                        <?php elseif($_SESSION["ruolo"] === Roles::DEALER->value): ?>
+                                            <?php echo htmlspecialchars($_SESSION["ragSociale"]); ?>
+                                        <?php endif; ?>
+                                    </a>
+                                </li>
 
-                            <li class="nav-item d-lg-none">
-                                <!-- Aggiungi logout con la classe 'logout-link' anche per il mobile -->
-                                <a class="nav-link custom-nav-link logout-link" href="logout.php">Logout</a>
-                            </li>
-                            <?php endif; ?>
-                            <?php if(!isUserLoggedIn()): ?>
+                                <li class="nav-item d-lg-none">                                
+                                    <a class="nav-link custom-nav-link logout-link" href="logout.php">Logout</a>
+                                </li>
+                            <?php else: ?>
                                 <li class="nav-item d-lg-none">
                                     <a class="nav-link custom-nav-link" href="login.php" >Login</a>
                                 </li>
@@ -68,19 +62,16 @@
                             <?php endif; ?>
                         </ul>
                     </div>
-                    <!-- Sezione per desktop, allineata a destra -->
+                    
                     <div class="d-none d-lg-flex ms-auto">
                         <?php if(isUserLoggedIn()): ?>
-                            <!-- Verifica il ruolo e mostra il nome o la ragione sociale -->
-                            <?php if($_SESSION["ruolo"] === "acquirente"): ?>
-                                <span class="nav-link custom-nav-link">
-                                    <?php echo htmlspecialchars($_SESSION["nome"]); ?>
-                                </span>
-                            <?php elseif($_SESSION["ruolo"] === "concessionaria"): ?>
-                                <span class="nav-link custom-nav-link">
-                                    <?php echo htmlspecialchars($_SESSION["ragSociale"]); ?>
-                                </span>
-                            <?php endif; ?>
+                            <a class="nav-link custom-nav-link profile-link" href="profile.php">
+                                    <?php if($_SESSION["ruolo"] === Roles::BUYER->value): ?>
+                                        <?php echo htmlspecialchars($_SESSION["nome"]); ?>
+                                    <?php elseif($_SESSION["ruolo"] === Roles::DEALER->value): ?>
+                                        <?php echo htmlspecialchars($_SESSION["ragSociale"]); ?>
+                                    <?php endif; ?>
+                                </a>
                             <a class="nav-link custom-nav-link logout-link" href="logout.php">Logout</a>
                         <?php endif; ?>
 
