@@ -21,8 +21,8 @@
                             <p class="card-text">Kilometri: <?php echo number_format($vehicle['kilometri']); ?> km</p>
 
                             <div class="d-flex justify-content-end">
-                                <a href="vaiAModificavehicle.php?numTelaio=<?php echo $vehicle['numTelaio']; ?>" class="btn btn-sm btn-warning mr-2">Modifica</a>
-                                <form action="eliminavehicle.php" method="POST" class="d-inline">
+                                <a href="goToUpdateVehicle.php?numTelaio=<?php echo $vehicle['numTelaio']; ?>" class="btn btn-sm btn-warning mr-2">Modifica</a>
+                                <form action="deleteVehicle.php" method="POST" class="d-inline">
                                     <input type="hidden" name="numTelaio" value="<?php echo $vehicle['numTelaio']; ?>">
                                     <button type="submit" class="btn btn-sm btn-danger">Elimina</button>
                                 </form>
@@ -38,6 +38,6 @@
     <?php endif; ?>
 
     <div class="mt-4">
-        <a href="aggiungivehicle.php" class="btn btn-primary">Aggiungi nuovo vehicle</a>
+        <a href="addVehicle.php" class="btn btn-primary">Aggiungi nuovo vehicle</a>
     </div>
 </div>

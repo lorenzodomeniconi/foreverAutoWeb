@@ -32,15 +32,6 @@ body {
     color: white;
 }
 
-.social-icon {
-    font-size: 1.2rem;
-    color: white;
-}
-
-.social-icon:hover {
-    color: #a70024;
-}
-
 .d-flex {
   gap: 1%;
 }
@@ -109,7 +100,7 @@ body {
 }
 
 .card-img-top {
-  height: 200px; /* Set your preferred height */
-  object-fit: cover; /* Ensure the image covers the area without distortion */
-  width: 100%; /* Make sure the image stretches full width of its container */
+  height: 200px;
+  object-fit: cover;
+  width: 100%;
 }

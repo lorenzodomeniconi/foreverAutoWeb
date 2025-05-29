@@ -1,6 +1,6 @@
 <div class="container my-5">
     <h2 class="text-light mb-4">Aggiungi un Nuovo Veicolo</h2>
-    <form action="veicoloAggiunto.php" method="POST">
+    <form action="addedVehicle.php" method="POST">
         <div class="mb-3">
             <label class="form-label text-light">Numero di Telaio</label>
             <input type="text" class="form-control dark-input" name="numTelaio" required>
