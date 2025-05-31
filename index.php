@@ -24,7 +24,7 @@ if(isUserLoggedIn()) {
     // Visualizzazione cliente //
     else {
         // Creo un carrello per l'utente
-        $_SESSION['codCarrello'] = $db->getOrCreateCarrello($_SESSION['username']);
+        $_SESSION['codCarrello'] = $db->getOrCreateCart($_SESSION['username']);
 
         setTemplateParams("ForeverAuto - Home", "templates/" . Pages::HOME_PAGE->value, array(
             "vehicles" => $db->getVehicles($search, $categoria, $disponibilita),

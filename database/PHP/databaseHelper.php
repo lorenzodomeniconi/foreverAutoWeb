@@ -167,14 +167,14 @@ class DatabaseHelper {
      * @return array Un array contenente i dati del veicolo che soddisfa il criterio di ricerca
      */
     public function getVehicleByNumTelaio($numTelaio) {
-        $query = "SELECT numTelaio, marca, modello, descrizione, alimentazione, 
-                         prezzo, kilometri, proprietariPrecedenti, ragSociale, 
-                         venduto, concessionaria 
-                  FROM veicoli, concessionarie 
+        $query = "SELECT v.numTelaio, v.marca, v.modello, v.descrizione, v.alimentazione, 
+                         v.prezzo, v.kilometri, v.proprietariPrecedenti, c.ragSociale, 
+                         v.venduto, v.concessionaria 
+                  FROM veicoli v JOIN concessionarie c ON v.concessionaria = c.partitaIva 
                   WHERE numTelaio = ?";
         
         $stmt = $this->db->prepare($query);
-        $stmt->bind_param('i',$numTelaio);
+        $stmt->bind_param('s',$numTelaio);
         $stmt->execute();
         $result = $stmt->get_result();
 
@@ -213,7 +213,7 @@ class DatabaseHelper {
      * @param string $username: Nome utente per il quale ottenere o creare il carrello
      * @return int Il codice del carrello
      */
-    public function getOrCreateCarrello($username) {
+    public function getOrCreateCart($username) {
         $stmt = $this->db->prepare("SELECT codCarrello 
             FROM carrelli 
             WHERE username = ? AND chiuso = 0 
@@ -270,8 +270,8 @@ class DatabaseHelper {
      * @param string $numTelaio: numero di telaio del veicolo del veicolo che si vuole aggiungere al carrello
      * @return string: ritorna un messaggio di errore se quel determinato veicolo è già presente in quel determinato carrello
      */
-    public function insertVehicleInCarrello($codCarrello, $numTelaio) {
-        $carrello = $this->getVeicoliNelCarrello($codCarrello);
+    public function insertVehicleInCart($codCarrello, $numTelaio) {
+        $carrello = $this->getVehicleInCart($codCarrello);
 
         // Controlla se il veicolo è già presente nel carrello        
         foreach ($carrello as $veicolo) {
@@ -295,7 +295,7 @@ class DatabaseHelper {
      * @param int $codCarrello: codice del carrello di cui si vuole visualizzare il contenuto
      * @return array: array contenente tutti i veicoli presenti nel carrello richiesto
      */
-    public function getVeicoliNelCarrello($codCarrello) {
+    public function getVehicleInCart($codCarrello) {
         $stmt = $this->db->prepare("
             SELECT v.numTelaio, v.marca, v.modello, v.prezzo, v.venduto
             FROM veicoli v
@@ -316,6 +316,18 @@ class DatabaseHelper {
         $query = "UPDATE veicoli SET marca = ?, modello = ?, prezzo = ?, descrizione = ?, proprietariPrecedenti = ?, kilometri = ?, alimentazione = ?, venduto = ? WHERE numTelaio = ?";
         $stmt = $this->db->prepare($query);
         $stmt->bind_param("ssisiisis", $marca, $modello, $prezzo, $descrizione, $proprietariPrecedenti, $kilometri, $alimentazione, $venduto, $numTelaio);
+        $stmt->execute();
+    }
+
+    /**
+     * Rimuove un veicolo dal carrello di un utente
+     * @param int $codCarrello: codice dal carrello da cui si vuole eliminare il veicolo
+     * @param string $numTelaio: numero di telaio del veicolo che si vuole eliminare
+     * @return void
+     */
+    public function deleteVehicleFromCart($codCarrello, $numTelaio) {
+        $stmt = $this->db->prepare("DELETE FROM carrelliSpecifici WHERE codCarrello = ? AND numTelaio = ?");
+        $stmt->bind_param("is", $codCarrello, $numTelaio);
         $stmt->execute();
     }
 

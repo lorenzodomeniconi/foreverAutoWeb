@@ -23,6 +23,8 @@ enum Pages: string {
     case SINGLE_VEHICLE = 'singleVehicle.php';
     case UPDATE_VEHICLE = 'updateVehicleForm.php';
     case PROFILE_PAGE = 'profilePage.php';
+    case CART = 'cart.php';
+    case CART_PAGE = 'cartPage.php';
 }
 
 enum ErrorTypes: int {

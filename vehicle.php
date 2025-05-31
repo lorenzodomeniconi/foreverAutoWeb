@@ -15,14 +15,14 @@ $_SESSION['erroreCarrello'] = null;
 
 $telaio = $_GET['telaio'];
 $vehicle = $db->getVehicleByNumTelaio($telaio);
+echo($vehicle);
 if (!$vehicle) {
-    header("Location: index.php");
+    header("Location: " . Pages::INDEX->value);
     exit;
 }
 
 setTemplateParams("ForeverAuto - Dettaglio Veicolo", "templates/" . Pages::SINGLE_VEHICLE->value, 
     array("vehicle" => $vehicle
 ));
-
 require "templates/" . Pages::BASE->value;
 ?>
