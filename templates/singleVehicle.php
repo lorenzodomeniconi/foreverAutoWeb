@@ -6,7 +6,7 @@
             $imgPath = "style/vehicleImgs/" . $imgName;
         ?>
               
-        <img src="<?php echo $imgPath; ?>" class="card-img-top" alt="<?php echo strtolower(str_replace(' ', '', $templateParams['vehicle'][0]['marca'] . $templateParams['vehicle'][0]['modello'])) . ".jpeg"; ?>">
+        <img src="<?php echo $imgPath; ?>" class="card-img-top card-hover" alt="<?php echo strtolower(str_replace(' ', '', $templateParams['vehicle'][0]['marca'] . $templateParams['vehicle'][0]['modello'])) . ".jpeg"; ?>">
 
     </div>
     <div class="col-lg-6 text-light">
