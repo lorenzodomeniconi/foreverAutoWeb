@@ -15,7 +15,7 @@ $_SESSION['erroreCarrello'] = null;
 
 $telaio = $_GET['telaio'];
 $vehicle = $db->getVehicleByNumTelaio($telaio);
-echo($vehicle);
+// echo($vehicle);
 if (!$vehicle) {
     header("Location: " . Pages::INDEX->value);
     exit;
