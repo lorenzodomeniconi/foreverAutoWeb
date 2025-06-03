@@ -34,7 +34,7 @@
                                 <a class="nav-link custom-nav-link <?php echo isActive("notifiche.php");?>" href="">Notifiche</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link custom-nav-link <?php echo isActive("carrello.php");?>" href="">Carrello</a>
+                                <a class="nav-link custom-nav-link <?php echo isActive("cart.php");?>" href="cart.php">Carrello</a>
                             </li>
                             <?php endif; ?>
                             
