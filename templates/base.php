@@ -31,11 +31,13 @@
                                 <a class="nav-link custom-nav-link <?php echo isActive("index.php");?>" href="index.php">Home</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link custom-nav-link <?php echo isActive("notifiche.php");?>" href="">Notifiche</a>
+                                <a class="nav-link custom-nav-link <?php echo isActive("notifies.php");?>" href="notifies.php">Notifiche</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link custom-nav-link <?php echo isActive("cart.php");?>" href="cart.php">Carrello</a>
-                            </li>
+                            <?php if($_SESSION["ruolo"] === Roles::BUYER->value): ?>
+                                    <li class="nav-item">
+                                        <a class="nav-link custom-nav-link <?php echo isActive("cart.php");?>" href="cart.php">Carrello</a>
+                                    </li>
+                            <?php endif; ?>
                             <?php endif; ?>
                             
                             <?php if(isUserLoggedIn()): ?>

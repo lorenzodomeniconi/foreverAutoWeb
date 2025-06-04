@@ -21,7 +21,7 @@
         </span>
       </p>
       <p><strong>Veicolo fornito da: </strong>
-  <a href="profiloConcessionaria.php?partitaIva=<?php echo urlencode($templateParams['vehicle'][0]['concessionaria']); ?>" class="text-info text-decoration-underline">
+  <a href="dealerShowroom.php?partitaIva=<?php echo urlencode($templateParams['vehicle'][0]['concessionaria']); ?>" class="text-info text-decoration-underline">
     <?php echo htmlspecialchars($templateParams['vehicle'][0]['ragSociale']); ?>
   </a>
 </p>

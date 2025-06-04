@@ -14,6 +14,7 @@ enum Pages: string {
     case LOGIN = 'login.php';
     case PROFILE = 'profile.php';
     // case SETTINGS = 'settings.php';
+    case NOTIFIES = 'notifies.php';
     
     case HOME_PAGE = 'homePage.php';
     case LOGIN_PAGE = 'loginForm.php';
@@ -25,6 +26,10 @@ enum Pages: string {
     case PROFILE_PAGE = 'profilePage.php';
     case CART = 'cart.php';
     case CART_PAGE = 'cartPage.php';
+    case SHOWROOM_PAGE = 'showroom.php';
+    case PAYMENT_PAGE = 'paymentForm.php';
+    case NOTIFIES_PAGE = 'notifiesPage.php';
+    case CONFIRMED_PAYMENT = 'confirmedPayment.php';
 }
 
 enum ErrorTypes: int {

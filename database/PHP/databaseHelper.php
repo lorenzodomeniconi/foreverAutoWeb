@@ -363,4 +363,107 @@ class DatabaseHelper {
         return false;
     }
 
+    // Invio notifica ad username con messaggio
+    public function sendNotify($username, $messaggio) {
+        $stmt = $this->db->prepare("INSERT INTO notifiche (dataOra, messaggio, destinatario, nuova) VALUES (?, ?, ?, 1)");
+        $dataOra = date("Y-m-d H:i:s");
+        $stmt->bind_param("sss", $dataOra, $messaggio, $username);
+        $stmt->execute();
+    }
+
+    // Ritorna le notifiche associate a un certo username
+    public function getNotifiesByUsername($username) {
+        $stmt = $this->db->prepare("SELECT * FROM notifiche WHERE destinatario = ? ORDER BY dataOra DESC");
+        $stmt->bind_param("s", $username);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+    // Elimina una notifica
+    public function deleteNotify($codNotifica) {
+        $query = "DELETE FROM notifiche WHERE codNotifica = ?";
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param("i", $codNotifica);
+        $stmt->execute();
+    }
+
+    // Segna come letta una notifica
+    public function markNotifyAsRead($codNotifica) {
+        $query = "UPDATE notifiche SET nuova = 0 WHERE codNotifica = ?";
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param("i", $codNotifica);
+        $stmt->execute();
+    }
+
+    // Chiusura del carrello, chiusura vendita, modifica stato dei veicoli coinvolti e invio notifiche ai diretti interessati
+    public function closeCartAndPay($codCarrello) {
+        // Segna come venduti i veicoli presenti nel carrello
+        $query1 = "
+            UPDATE veicoli 
+            SET venduto = 1 
+            WHERE numTelaio IN (
+                SELECT numTelaio 
+                FROM carrelliSpecifici 
+                WHERE codCarrello = ?
+            )";
+        $stmt1 = $this->db->prepare($query1);
+        $stmt1->bind_param("i", $codCarrello);
+        $stmt1->execute();
+    
+        // Chiude il carrello
+        $query2 = "UPDATE carrelli SET chiuso = 1 WHERE codCarrello = ?";
+        $stmt2 = $this->db->prepare($query2);
+        $stmt2->bind_param("i", $codCarrello);
+        $stmt2->execute();
+
+        // Inserisce la vendita nella tabella vendite
+        $dataOra = date("Y-m-d H:i:s");
+        $stmtVendita = $this->db->prepare("INSERT INTO vendite (codCarrello, dataOra) VALUES (?, ?)");
+        $stmtVendita->bind_param("is", $codCarrello, $dataOra);
+        $stmtVendita->execute();
+    
+        // Recupera lo username associato al carrello per mandare una notifica all'acquirente
+        $stmtUser = $this->db->prepare("SELECT username FROM carrelli WHERE codCarrello = ?");
+        $stmtUser->bind_param("i", $codCarrello);
+        $stmtUser->execute();
+        $resultUser = $stmtUser->get_result();
+        $user = $resultUser->fetch_all(MYSQLI_ASSOC);
+    
+        $username = $user[0]['username'];
+    
+        // Recupera tutti i veicoli nel carrello con anche la concessionaria in modo da poter mandare una notifica alle concessionarie che hanno venduto il loro veicolo
+        $stmtVeicoli = $this->db->prepare("
+            SELECT v.numTelaio, v.marca, v.modello, v.concessionaria 
+            FROM veicoli v 
+            JOIN carrelliSpecifici cs ON v.numTelaio = cs.numTelaio 
+            WHERE cs.codCarrello = ?
+        ");
+        $stmtVeicoli->bind_param("i", $codCarrello);
+        $stmtVeicoli->execute();
+        $resVeicoli = $stmtVeicoli->get_result();
+        $veicoli = $resVeicoli->fetch_all(MYSQLI_ASSOC);
+    
+        // Per ogni veicolo invia una notifica a chi ha acquistato e chi ha venduto
+        foreach ($veicoli as $veicolo) {
+            $marca = $veicolo['marca'];
+            $modello = $veicolo['modello'];
+            $partitaIVA = $veicolo['concessionaria'];
+    
+            $messaggioUtente = "Hai completato con successo l'acquisto di $marca $modello.";
+            $this->sendNotify($username, $messaggioUtente);
+    
+            // Recupera lo username della concessionaria a partire dalla partita Iva
+            $stmtConcessionario = $this->db->prepare("SELECT username FROM concessionarie WHERE partitaIva = ?");
+            $stmtConcessionario->bind_param("s", $partitaIVA);
+            $stmtConcessionario->execute();
+            $resConcessionario = $stmtConcessionario->get_result();
+            $rows = $resConcessionario->fetch_all(MYSQLI_ASSOC);
+            
+            $usernameConcessionaria = $rows[0]['username'];
+            $messaggioVenditore = "Il tuo veicolo $marca $modello è stato venduto.";
+            $this->sendNotify($usernameConcessionaria, $messaggioVenditore);
+        }
+    }
+
 }

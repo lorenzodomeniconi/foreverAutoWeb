@@ -48,7 +48,7 @@
         
             <hr>
             
-            <a href="manage_vehicles.php" class="btn btn-primary">Gestisci Veicoli</a>
+            <a href="index.php" class="btn btn-primary">Gestisci Veicoli</a>
         <?php endif; ?>
 
         <hr>
