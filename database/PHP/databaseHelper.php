@@ -363,7 +363,11 @@ class DatabaseHelper {
         return false;
     }
 
-    // Invio notifica ad username con messaggio
+    /**
+     * Invia una notifica a un utente specifico
+     * @param string $username: Nome utente a cui inviare la notifica
+     * @param string $messaggio: Messaggio della notifica
+     */
     public function sendNotify($username, $messaggio) {
         $stmt = $this->db->prepare("INSERT INTO notifiche (dataOra, messaggio, destinatario, nuova) VALUES (?, ?, ?, 1)");
         $dataOra = date("Y-m-d H:i:s");
@@ -371,7 +375,11 @@ class DatabaseHelper {
         $stmt->execute();
     }
 
-    // Ritorna le notifiche associate a un certo username
+    /**
+     * Ottiene le notifiche per un utente specifico
+     * @param string $username: Nome utente per il quale ottenere le notifiche
+     * @return array Un array di notifiche associate all'utente
+     */
     public function getNotifiesByUsername($username) {
         $stmt = $this->db->prepare("SELECT * FROM notifiche WHERE destinatario = ? ORDER BY dataOra DESC");
         $stmt->bind_param("s", $username);
@@ -380,7 +388,10 @@ class DatabaseHelper {
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
-    // Elimina una notifica
+    /**
+     * Elimina una notifica specifica
+     * @param int $codNotifica: Codice della notifica da eliminare
+     */
     public function deleteNotify($codNotifica) {
         $query = "DELETE FROM notifiche WHERE codNotifica = ?";
         $stmt = $this->db->prepare($query);
@@ -388,7 +399,10 @@ class DatabaseHelper {
         $stmt->execute();
     }
 
-    // Segna come letta una notifica
+    /**
+     * Segna una notifica come letta
+     * @param int $codNotifica: Codice della notifica da segnare come letta
+     */
     public function markNotifyAsRead($codNotifica) {
         $query = "UPDATE notifiche SET nuova = 0 WHERE codNotifica = ?";
         $stmt = $this->db->prepare($query);
@@ -396,7 +410,10 @@ class DatabaseHelper {
         $stmt->execute();
     }
 
-    // Chiusura del carrello, chiusura vendita, modifica stato dei veicoli coinvolti e invio notifiche ai diretti interessati
+    /**
+     * Chiude il carrello e la vendita, modifica lo stato dei veicoli e invia le notifiche
+     * @param int $codCarrello: Codice del carrello da chiudere
+     */
     public function closeCartAndPay($codCarrello) {
         // Segna come venduti i veicoli presenti nel carrello
         $query1 = "
